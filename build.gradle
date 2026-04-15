@@ -30,13 +30,23 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'com.codeborne:selenide:7.13.0'
     testImplementation 'net.datafaker:datafaker:2.5.3'
+    testImplementation 'org.aeonbits.owner:owner:1.0.12'
 }
 test {
     useJUnitPlatform()
+    systemProperties(System.getProperties())
 }
 
-task positiveTest(type: Test) {
+task uiTest(type: Test) {
     useJUnitPlatform {
-        includeTags 'positive'
+def tag = System.getProperty("tag")
+        //если тэг + = ui и tag тест
+        //нет - ui
+        if (tag != null) {
+            includeTags("UI & ${tag}")
+        } else {
+            includeTags("UI")
+        }
     }
+    systemProperties(System.getProperties())
 }

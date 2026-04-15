@@ -21,22 +21,25 @@ public class WsCartPage {
     //WELCOME PAGE -> CATALOG PAGE -> PRODUCT PAGE -> CART PAGE
 
     //CARTPAGE
-    @Step("Подтверждение наименования товара {itemName}")
-    public WsCartPage verifyItemName(String itemName) {
-        cartItemName.shouldHave(text(itemName));
-        return this;
+
+
+    @Step("Получение количество товара")
+    public String getCartQuantity () {
+        return cartItemQuantity.getAttribute("value");
     }
-    @Step("Подтверждение количество товара {itemQuantity}")
-    public WsCartPage verifyCartItemQuantity (String itemQuantity) {
-        String itemQuantityInCart = cartItemQuantity.getAttribute("value");
-        assertEquals(itemQuantity, itemQuantityInCart);
-        return this;
+    @Step("Получение именования товара")
+    public String getItemName() {
+        return cartItemName.getText();
+    }
+    @Step("Получение итоговой суммы корзины")
+    public Float getSubtotal () {
+        return Float.parseFloat(cartSubtotal.getText());
     }
 
-    @Step("Подтверждение цены товара")
-    public WsCartPage verifyCartValue(String itemPrice, String itemQuantity, String processorPrice) {
+    @Step("Подтверждение цены товара. GetSubtotal and Calculate expectedTotal")
+    public String calculateExpectedSubtotal(String itemPrice, String itemQuantity, String processorPrice) {
 
-        float processorValue = 0f;
+   /*     float processorValue = 0f;
         Pattern pattern = Pattern.compile("[-+]?\\d*\\.?\\d+");
         Matcher matcher = pattern.matcher(processorPrice);
 
@@ -45,14 +48,14 @@ public class WsCartPage {
             System.out.println(processorValue); // 15.0
         } else {
             System.out.println("slow processor"); // 15.0
-        }
+        }*/
+        //matcher example
         float price = Float.parseFloat(itemPrice);
         float quantity = Float.parseFloat(itemQuantity);
-        float expectedTotal = (price+processorValue) * quantity ;
+        String  expectedTotal = String.valueOf(price * quantity) ;
 
 
-        cartSubtotal.shouldHave(text(String.valueOf(expectedTotal)));
-        return this;
+        return expectedTotal;
     }
 
 

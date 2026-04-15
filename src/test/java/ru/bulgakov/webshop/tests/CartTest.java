@@ -8,19 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import ru.bulgakov.mentor.pages.WelcomePage;
 import ru.bulgakov.webshop.TestBase;
 import ru.bulgakov.webshop.pages.WsCartPage;
 import ru.bulgakov.webshop.pages.WsProductPage;
 import ru.bulgakov.webshop.pages.WsWelcomePage;
 import ru.bulgakov.webshop.steps.AuthSteps;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.SeverityLevel.BLOCKER;
-import static io.qameta.allure.SeverityLevel.CRITICAL;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.bulgakov.webshop.config.Config.WEB_SHOP_URL;
 
@@ -29,7 +25,17 @@ public class CartTest extends TestBase {
     private final AuthSteps authSteps = new AuthSteps();
     private String itemQuantity = "2";
     private Integer index = 1;
+    private Integer productIndex = 0;
 
+    private float getProcessorPrice(int processorIndex) {
+        return switch (processorIndex) {
+            case 0 -> 0f;
+            case 1 -> 15f;
+            case 2 -> 100f;
+            default -> throw new IllegalArgumentException(
+                    "Unknown processor index: " + processorIndex);
+        };
+    }
 
     @BeforeEach
     void beforeEach() {
@@ -42,27 +48,36 @@ public class CartTest extends TestBase {
     @Owner("Kirill S.")
     @Severity(BLOCKER)
     @Link("TASK-221")
-    void POaddItemCartTest() {
+    void addItemToCartSuccessfully() {
+
+        String property = System.getProperty("run", "local");
+        System.out.println(property);
 
         WsProductPage productPage = new WsProductPage();
+        WsCartPage cartPage = new WsCartPage();
 
         open(WEB_SHOP_URL, WsWelcomePage.class)
                 .hoverComputerMenu()
                 .clickComputerButton()
-                .selectCertainProduct()
-                .changeProccessorType(index);
+                .selectProduct(productIndex)
+                .selectProcessor(index)
+                .setQuantity(itemQuantity);
+        String itemName = productPage.getItemName();
+        String itemPrice = productPage.getItemPrice();
 
-                 String itemName = $("[itemprop=name]").getText();
-                 String itemPrice = $("[itemprop=price]").getText();
-                 String processorPrice = $$("dl dd ul").get(0).$$("li label").get(index).getText();
-
-                 productPage.inputItemQuantity(itemQuantity)
-                .submitToCart()
+        productPage.submitToCart()
                 .verifyNotificationSuccessMessage()
                 .checkHeadbarCartItemQuantity(itemQuantity)
-                .enterCartMenu()
-                .verifyItemName(itemName)
-                .verifyCartItemQuantity(itemQuantity)
-                .verifyCartValue(itemPrice, itemQuantity, processorPrice);
+                .enterCartMenu();
+
+        float processorPrice = getProcessorPrice(index);
+        Float expectedTotal = (Float.parseFloat(itemPrice) + processorPrice) * Float.parseFloat(itemQuantity);
+        assertAll(
+                () -> assertEquals(itemName, cartPage.getItemName()),
+                () -> assertEquals(expectedTotal, cartPage.getSubtotal()),
+                () -> assertEquals(itemQuantity, cartPage.getCartQuantity())
+        );
+
+
     }
 }
