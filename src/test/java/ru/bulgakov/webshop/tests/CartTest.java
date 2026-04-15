@@ -4,10 +4,7 @@ import io.qameta.allure.Link;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Severity;
 import net.datafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.bulgakov.webshop.TestBase;
 import ru.bulgakov.webshop.pages.WsCartPage;
 import ru.bulgakov.webshop.pages.WsProductPage;
@@ -43,7 +40,7 @@ public class CartTest extends TestBase {
     }
 
     @Test
-    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("positive")})
     @DisplayName("Успешное добавление товара в корзину")
     @Owner("Kirill S.")
     @Severity(BLOCKER)

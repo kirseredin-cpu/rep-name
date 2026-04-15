@@ -45,6 +45,7 @@ public class LoginTest extends TestBase {
         @Severity(CRITICAL)
         @DisplayName("Успешная логинизация нового пользователя")
         @Owner("Kirill S.")
+        @Tags({@Tag("UI"), @Tag("positive")})
         @Link("TASK-35")
         void succesLoginTest(){
 
@@ -63,7 +64,7 @@ public class LoginTest extends TestBase {
     @Severity(NORMAL)
     @Owner("Kirill S.")
     @Link("TASK-220")
-    @Tag("negative")
+    @Tags({@Tag("UI"), @Tag("negative")})
     @CsvFileSource(resources = "/emails.csv")
     void invalidEmailLoginTest(String email) {
         open(WEB_SHOP_LOGIN_URL, WsLoginPage.class)
