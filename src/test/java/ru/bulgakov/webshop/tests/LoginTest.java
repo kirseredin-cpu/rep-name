@@ -25,8 +25,8 @@ public class LoginTest extends TestBase {
     @Nested
     public class PositiveTests {
         @BeforeEach
-        void before(){
-            password = faker.harryPotter().character() + faker.number().positive();
+        void before() {
+            password = createPassword();
             email = faker.internet().emailAddress();
 
             open(WEB_SHOP_REGISTRATION_URL, ru.bulgakov.webshop.pages.WsRegistrationPage.class)
@@ -47,7 +47,7 @@ public class LoginTest extends TestBase {
         @Owner("Kirill S.")
         @Tags({@Tag("UI"), @Tag("positive")})
         @Link("TASK-35")
-        void succesLoginTest(){
+        void succesLoginTest() {
 
             open(WEB_SHOP_URL, WsWelcomePage.class)
                     .entryLoginPanel()
@@ -59,6 +59,7 @@ public class LoginTest extends TestBase {
                     .checkUserLoggedIn(email);
         }
     }
+
 
     @ParameterizedTest(name = "Авторизация с невалидным email: {0}")
     @Severity(NORMAL)
@@ -73,5 +74,9 @@ public class LoginTest extends TestBase {
                 .verifyValidatiionErrorMessage()
                 .submitLogin();
 
+    }
+
+    private String createPassword() {
+        return faker.harryPotter().character() + faker.number().positive();
     }
 }

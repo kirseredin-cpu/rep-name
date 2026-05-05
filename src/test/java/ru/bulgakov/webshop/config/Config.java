@@ -14,7 +14,7 @@ public class Config {
     public static final String WEB_SHOP_REGISTRATION_URL = WEB_SHOP_URL + "/register";
     public static final String WEB_SHOP_LOGIN_URL = WEB_SHOP_URL + "/login";
 
-    private static final WebDriverConfig config = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
+        private static final WebDriverConfig config = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
 
     public static WebDriverConfig getWebDriverConfig() {
         return config;
